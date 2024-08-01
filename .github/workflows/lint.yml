@@ -6,6 +6,9 @@ name: Lint with Flake8
 on:
   # Allow running manually from Actions tab
   workflow_dispatch:
+  pull_request:
+    branches:
+      - "main"
 
 permissions:
   contents: read
