@@ -45,15 +45,15 @@ def get_std_gray(img_path):
 def normalize_gray_img_background(img_path, output_dir, set_background_pix):
     img = iio.imread(img_path, mode="L")
 
-    vals, counts = np.unique(img, return_counts=True)
-    mode_idx = np.argwhere(counts == np.max(counts))
-    mode = vals[mode_idx].flatten().tolist()[0]
+    # vals, counts = np.unique(img, return_counts=True)
+    # mode_idx = np.argwhere(counts == np.max(counts))
+    # mode = vals[mode_idx].flatten().tolist()[0]
 
     in_range_df = get_std_gray(img_path)
     if in_range_df is None:
         print("image: {} skipped.".format(os.path.basename(img_path)))
         return 0
-    
+
     background_pix_vals = in_range_df['x'].to_list()
     mode_pix = in_range_df.loc[in_range_df['y'].idxmax()]['x']
 
@@ -76,7 +76,7 @@ def normalize_gray(input_dir, output_dir, set_background_pix=None):
 
     input_names = os.listdir(input_dir)
     output_names = os.listdir(output_dir)
-        
+
     for img_name in input_names:
         name = img_name
         if set_background_pix == 0:
@@ -85,28 +85,29 @@ def normalize_gray(input_dir, output_dir, set_background_pix=None):
             continue
         path = os.path.join(input_dir, name)
         num_processed = num_processed + normalize_gray_img_background(path, output_dir, set_background_pix)
-    
+
     print("{} gray input images normalized and saved out of {} total images. {} images were filtered out."
-        .format(num_processed, num_total, num_total - num_processed))
-    
+          .format(num_processed, num_total, num_total - num_processed))
+
     return num_processed
 
 ######################################################################################
 
 
 def get_color_peaks(img):
-    vals, counts = np.unique(img, return_counts=True)
-    mode_idx = np.argwhere(counts == np.max(counts))
-    mode = vals[mode_idx].flatten().tolist()[0]
+    # vals, counts = np.unique(img, return_counts=True)
+    # mode_idx = np.argwhere(counts == np.max(counts))
+    # mode = vals[mode_idx].flatten().tolist()[0]
 
     colors = ("red", "green", "blue")
     max_peaks = []
 
-    # Consider forcing a range that the max peaks must lie within, a range of possible background pixel values to omit non normalized images.
+    # Consider forcing a range that the max peaks must lie within,
+    # a range of possible background pixel values to omit non normalized images.
     for channel_id, color in enumerate(colors):
         vals, counts = np.unique(img[:, :, channel_id], return_counts=True)
-        mode_idx = np.argwhere(counts == np.max(counts))
-        #print(mode_idx, " is the mode for ", channel_id)
+        # mode_idx = np.argwhere(counts == np.max(counts))
+        # print(mode_idx, " is the mode for ", channel_id)
 
         histogram, bin_edges = np.histogram(img[:, :, channel_id], bins=256, range=(0, 256))
 
@@ -124,7 +125,7 @@ def get_color_peaks(img):
         in_range = max_peak_df.loc[max_peak_df['y'] >= std_range]
 
         max_peaks.append(in_range)
-    
+
     return max_peaks
 
 
@@ -150,11 +151,11 @@ def optimal_normalize_all_channels(image_path, gray_img_path, max_peaks, output_
     for i in range(3):
         for c in background_pix_values[i]:
             if set_background_pix is None:
-                img[:, :, i:i+1][img[:, :, i:i+1] == c] = mode_pixels[i]
-                img[:, :, i:i+1][gray_img[:, :, i:i+1] == gray_mode] = mode_pixels[i]
+                img[:, :, i:i + 1][img[:, :, i:i + 1] == c] = mode_pixels[i]
+                img[:, :, i:i + 1][gray_img[:, :, i:i + 1] == gray_mode] = mode_pixels[i]
             else:
-                img[:, :, i:i+1][img[:, :, i:i+1] == c] = set_background_pix
-                img[:, :, i:i+1][gray_img[:, :, i:i+1] == gray_mode] = set_background_pix
+                img[:, :, i:i + 1][img[:, :, i:i + 1] == c] = set_background_pix
+                img[:, :, i:i + 1][gray_img[:, :, i:i + 1] == gray_mode] = set_background_pix
 
     img_name = os.path.basename(image_path)
     if set_background_pix is None:
@@ -162,10 +163,10 @@ def optimal_normalize_all_channels(image_path, gray_img_path, max_peaks, output_
     else:
         path = os.path.join(output_dir, "BLACK TEST IMG 10 " + img_name)
 
-    #imwrite messes up how some paths save, so must convert path str to literal
+    # imwrite messes up how some paths save, so must convert path str to literal
     raw_path = r'{}'.format(path)
     cv2.imwrite(raw_path, img)
-    
+
     return 1
 
 
@@ -190,9 +191,9 @@ def moderate_normalize_color(image_path, gray_img_path, max_peaks, output_dir, s
 
     for i in range(3):
         if set_background_pix is None:
-            img[:, :, i:i+1][gray_img[:, :, i:i+1] == gray_mode] = mode_pixels[i]
+            img[:, :, i:i + 1][gray_img[:, :, i:i + 1] == gray_mode] = mode_pixels[i]
         else:
-            img[:, :, i:i+1][gray_img[:, :, i:i+1] == gray_mode] = set_background_pix
+            img[:, :, i:i + 1][gray_img[:, :, i:i + 1] == gray_mode] = set_background_pix
 
     img_name = os.path.basename(image_path)
     if set_background_pix is None:
@@ -200,10 +201,10 @@ def moderate_normalize_color(image_path, gray_img_path, max_peaks, output_dir, s
     else:
         path = os.path.join(output_dir, "BLACK TEST IMG 10 " + img_name)
 
-    #imwrite messes up how some paths save, so must convert path str to literal
+    # imwrite messes up how some paths save, so must convert path str to literal
     raw_path = r'{}'.format(path)
     cv2.imwrite(raw_path, img)
-    
+
     return 1
 
 
@@ -229,7 +230,7 @@ def fast_normalize_color(image_path, output_dir, normalized_output_dir):
 def normalize_color(input_dir, gray_norm_dir, output_dir, set_background_pix=None, version='optimal'):
     num_processed = 0
     num_total = len(os.listdir(input_dir))
-    
+
     input_names = os.listdir(input_dir)
     output_names = os.listdir(output_dir)
 
@@ -249,7 +250,7 @@ def normalize_color(input_dir, gray_norm_dir, output_dir, set_background_pix=Non
         req_img = cv2.imread(gray_norm_img)
         if req_img is None:
             continue
-        
+
         img = cv2.imread(path)
 
         gray_path = os.path.join(gray_norm_dir, img_name)
@@ -258,22 +259,30 @@ def normalize_color(input_dir, gray_norm_dir, output_dir, set_background_pix=Non
 
         for i in range(3):
             if in_ranges[i] is None:
-                    print("image: {} skipped because of color ambiguity.".format(img_name))
-                    continue
+                print("image: {} skipped because of color ambiguity.".format(img_name))
+                continue
 
-        #colors = ("red", "green", "blue")
+        # colors = ("red", "green", "blue")
 
         # normalize_all_channels(path, in_ranges)
         if version == 'optimal':
             # takes about 2.2s
-            num_processed = num_processed + optimal_normalize_all_channels(path, gray_path, in_ranges, output_dir, set_background_pix)
+            num_processed = num_processed + optimal_normalize_all_channels(path,
+                                                                           gray_path,
+                                                                           in_ranges,
+                                                                           output_dir,
+                                                                           set_background_pix)
         elif version == 'moderate':
             # takes about 1.5s
-            num_processed = num_processed + moderate_normalize_color(path, gray_path, in_ranges, output_dir, set_background_pix)
+            num_processed = num_processed + moderate_normalize_color(path,
+                                                                     gray_path,
+                                                                     in_ranges,
+                                                                     output_dir,
+                                                                     set_background_pix)
         else:
             assert False, version + " not a version for color normalization."
 
-    print("{} color input images normalized and saved out of {} total images with {} version. {} images were filtered out."
-        .format(num_processed, num_total, version, num_total - num_processed))
-    
+    print("{} images normalized and saved out of {} total images with {} version. {} images were filtered out."
+          .format(num_processed, num_total, version, num_total - num_processed))
+
     return num_processed

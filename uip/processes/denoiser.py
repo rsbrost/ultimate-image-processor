@@ -34,10 +34,11 @@ def fast_denoise(input_dir, output_dir, only_once=False, debug=False):
 
         if only_once is True:
             break
-        
+
         if debug is True:
-            print(f"{num_processed} color input images moderate denoised and saved out of {num_total} total images. {num_total - num_processed} images were filtered out.")
-            print(f"This was performed in {sum(times)}s with an average of {math.ceil(sum(times) / len(times) * 100) / 100}s per image.")
+            print(f"{num_processed} images fast denoised and saved out of {num_total} total images.")
+            print(f"{num_total - num_processed} images were filtered out.")
+            print(f"Done in {sum(times)}s with an average of {math.ceil(sum(times) / len(times) * 100) / 100}s per image.")
             print()
 
     return num_processed
@@ -75,8 +76,9 @@ def moderate_denoise(input_dir, output_dir, strength=5, only_once=False, debug=F
             break
 
     if debug is True:
-        print(f"{num_processed} color input images moderate denoised and saved out of {num_total} total images. {num_total - num_processed} images were filtered out.")
-        print(f"This was performed in {sum(times)}s with an average of {math.ceil(sum(times) / len(times) * 100) / 100}s per image.")
+        print(f"{num_processed} images moderate denoised and saved out of {num_total} total images.")
+        print(f"{num_total - num_processed} images were filtered out.")
+        print(f"Done in {sum(times)}s with an average of {math.ceil(sum(times) / len(times) * 100) / 100}s per image.")
         print()
 
     return num_processed
@@ -112,8 +114,9 @@ def optimal_denoise(input_dir, output_dir, strength=6, only_once=False, debug=Fa
             break
 
     if debug is True:
-        print(f"{num_processed} color input images optimal denoised and saved out of {num_total} total images. {num_total - num_processed} images were filtered out.")
-        print(f"This was performed in {sum(times)}s with an average of {math.ceil(sum(times) / len(times) * 100) / 100}s per image.")
+        print(f"{num_processed} images optimal denoised and saved out of {num_total} total images.")
+        print(f"{num_total - num_processed} images were filtered out.")
+        print(f"Done in {sum(times)}s with an average of {math.ceil(sum(times) / len(times) * 100) / 100}s per image.")
         print()
 
     return num_processed
