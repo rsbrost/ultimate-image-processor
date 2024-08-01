@@ -7,5 +7,10 @@
 # C901 too complex, change this later
 ignore=E266,E722,W503,C901
 
+# F401: module imported but unused
+per-file-ignores =
+    uip/__init__.py:F401,F403
+    uip/processes/__init__.py:F401,F403
+
 # Maximum allowed line length
 max-line-length = 120
