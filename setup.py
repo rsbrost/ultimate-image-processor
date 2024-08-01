@@ -8,13 +8,14 @@ setup(
     author='Ryan Brost',
     author_email='rsbrost@sandia.gov',
     install_requires=[
-        'cv2',
+        'opencv-python',
         'findpeaks',
-        'skimage',
+        'scikit-image',
         'pathlib',
         'numpy',
-        'imageio.v3',
+        'imageio',
         'scipy',
-        'numpy'
+        'numpy',
+        'ipykernel'
     ],
 )
