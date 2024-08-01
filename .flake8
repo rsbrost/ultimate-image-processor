@@ -1,10 +1,11 @@
 [flake8]
 # Ignored errors and warnings
-ignore =
-    E266,  # Too many leading '#' for block comment
-    E722,  # Do not use bare except, specify exception instead
-    W503,  # Line breaks should occur after the binary operator
-    C901   # Function is too complex
+# E266: too many leading '#' for block comment
+# E722: do not use bare except, specify exception instead
+# W503: Line breaks should occur after the binary operator
+# to keep all variable names aligned. (we're doing the opposite)
+# C901 too complex, change this later
+ignore=E266,E722,W503,C901
 
 # Maximum allowed line length
 max-line-length = 120
