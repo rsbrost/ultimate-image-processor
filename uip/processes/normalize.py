@@ -118,7 +118,7 @@ def get_color_peaks(img):
         max_idx = df.loc[df['y'].idxmax()]
         max_peak_df = df.loc[df['labx'] == max_idx['labx']]
 
-        max_y = df.loc[df['y'].idxmax()]['y']   
+        max_y = df.loc[df['y'].idxmax()]['y']
         std = max_peak_df.std()['y']
         num_stds = 10
         std_range = max_y - std * num_stds
@@ -208,7 +208,7 @@ def moderate_normalize_color(image_path, gray_img_path, max_peaks, output_dir, s
     return 1
 
 
-def fast_normalize_color(image_path, output_dir, normalized_output_dir):    
+def fast_normalize_color(image_path, output_dir, normalized_output_dir):
     try:
         img = cv2.imread(image_path)
 
