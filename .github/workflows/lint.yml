@@ -4,7 +4,6 @@
 name: Lint with Flake8
 
 on:
-  # Allow running manually from Actions tab
   workflow_dispatch:
   pull_request:
     branches:
@@ -30,11 +29,9 @@ jobs:
         python -m pip install --upgrade pip
         python -m pip install wheel
         python -m pip install flake8
-        python -m pip install pytest
-        python -m pip install nbmake
         python -m pip install -e .
         
     - name: Lint with flake8
       run: |
         # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
-        flake8 . --count --max-complexity=10 --max-line-length=127 --statistics
+        flake8 . --count --max-complexity=10 --max-line-length=127 --statistics --verbose

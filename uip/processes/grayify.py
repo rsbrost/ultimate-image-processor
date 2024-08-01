@@ -1,6 +1,7 @@
 import os
 import cv2
 
+
 def get_gray_from_color(input_dir, output_dir, debug=False):
     num_total = len(os.listdir(input_dir))
     num_processed = 0
@@ -20,6 +21,7 @@ def get_gray_from_color(input_dir, output_dir, debug=False):
         num_processed += 1
 
     if debug is True:
-        print(f"{num_processed} color input images grayified out of {num_total} total images. {num_total - num_processed} images were filtered out.")
-    
+        print(f"{num_processed} images grayified out of {num_total} total images.")
+        print(f"{num_total - num_processed} images were filtered out.")
+
     return num_processed

@@ -1,16 +1,16 @@
 [flake8]
 # Ignored errors and warnings
-ignore =
-    E266,  # Too many leading '#' for block comment
-    E722,  # Do not use bare except, specify exception instead
-    W503,  # Line breaks should occur after the binary operator
-    C901   # Function is too complex
+# E266: too many leading '#' for block comment
+# E722: do not use bare except, specify exception instead
+# W503: Line breaks should occur after the binary operator
+# to keep all variable names aligned. (we're doing the opposite)
+# C901 too complex, change this later
+ignore=E266,E722,W503,C901
 
-# Directories and files to exclude from checks
-exclude =
-    __pycache__,
-    build/,
-    dist/
+# F401: module imported but unused
+per-file-ignores =
+    uip/__init__.py:F401,F403
+    uip/processes/__init__.py:F401,F403
 
 # Maximum allowed line length
-max-line-length = 120
+max-line-length = 127
