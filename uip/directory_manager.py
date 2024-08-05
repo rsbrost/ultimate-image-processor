@@ -45,8 +45,8 @@ class DirectoryManager():
         # if old_current_output_dir != self.base_output_dir and same_process is True:
         if old_current_output_dir != self.base_output_dir:
             self.output_dir_history.append(self.current_output_dir)
-        else:
+        '''else:
             self.input_dir_history.append(self.output_dir_history)
-            self.output_dir_history = []
+            self.output_dir_history = []'''
 
         return self.current_output_dir

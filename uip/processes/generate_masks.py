@@ -1,7 +1,7 @@
 import numpy as np
 import os
 import cv2
-import scipy as stats
+from scipy.stats.mstats import mode
 
 
 def get_mode(gray_img):
@@ -87,10 +87,13 @@ def add_edges(gray_img, filtered_mask, min_area1=7, min_area2=100, max_area=5000
     return final_mask
 
 
-def make_masks(input_dir, output_dir):
+def make_masks(dm):
+    input_dir = dm.current_output_dir
     input_names = os.listdir(input_dir)
     input_names.sort()
     num_total = len(input_names)
+
+    output_dir = dm.set_output_dir('semantic_masks')
 
     num_processed, skipped = 0, 0
     for name in input_names:
@@ -105,7 +108,7 @@ def make_masks(input_dir, output_dir):
         # make sure the mask is predominantly black before saving
         # otherwise omit since it is likely confusing foreground with background
         flattened_mask = final_mask.flatten()
-        mask_mode = stats.mode(flattened_mask)[0]
+        mask_mode = mode(flattened_mask)[0]
 
         if mask_mode != 0:
             skipped += 1
@@ -116,4 +119,3 @@ def make_masks(input_dir, output_dir):
 
     print("{} masks produced from {} input images while {} skipped for lacking mode of 0.".format(num_processed,
                                                                                                   num_total, skipped))
-    return num_processed

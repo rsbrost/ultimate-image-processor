@@ -6,6 +6,7 @@ import os
 import cv2
 from scipy import stats
 import time
+import copy
 
 
 def get_gray_peak(img_path):
@@ -71,7 +72,7 @@ def normalize_gray_img_background(img_path, output_dir, set_background_pix):
     return 1
 
 
-def normalize_gray(input_dir, output_dir, overwrite=False, set_background_pix=None):
+def normalize_gray(input_dir, output_dir, overwrite=False, set_background_pix=None, only_once=False):
     num_processed = 0
     num_total = len(os.listdir(input_dir))
 
@@ -82,12 +83,14 @@ def normalize_gray(input_dir, output_dir, overwrite=False, set_background_pix=No
         name = img_name
         if set_background_pix == 0:
             img_name = "BLACK TEST IMG 10 " + img_name
-        if img_name in output_names:
+        if img_name in output_names and overwrite is False:
             continue
         path = os.path.join(input_dir, name)
         num_processed = num_processed + normalize_gray_img_background(path, output_dir, set_background_pix)
 
         print(f"\rNormalize gray progress: {num_processed}/{num_total}", end="")
+        if only_once is True:
+            break
     print()
 
     print("{} gray input images normalized and saved out of {} total images. {} images were filtered out."
@@ -138,6 +141,7 @@ def optimal_normalize_all_channels(image_path, gray_img_path, max_peaks, output_
 
     gray_img = cv2.imread(gray_img_path)
     if gray_img is None:
+        print(f"gray_img is None for path {gray_img_path}")
         return 0
     flattened_gray = gray_img.flatten()
     gray_mode = stats.mode(flattened_gray)[0]
@@ -162,10 +166,7 @@ def optimal_normalize_all_channels(image_path, gray_img_path, max_peaks, output_
                 img[:, :, i:i + 1][gray_img[:, :, i:i + 1] == gray_mode] = set_background_pix
 
     img_name = os.path.basename(image_path)
-    if set_background_pix is None:
-        path = os.path.join(output_dir, img_name)
-    else:
-        path = os.path.join(output_dir, "BLACK TEST IMG 10 " + img_name)
+    path = os.path.join(output_dir, img_name)
 
     # imwrite messes up how some paths save, so must convert path str to literal
     raw_path = r'{}'.format(path)
@@ -231,7 +232,8 @@ def fast_normalize_color(image_path, output_dir, normalized_output_dir):
         return 0
 
 
-def normalize_color(input_dir, gray_norm_dir, output_dir, version='optimal', set_background_pix=None):
+def normalize_color(input_dir, gray_norm_dir, output_dir, version='optimal', overwrite=True,
+                    set_background_pix=None, only_once=False):
     num_processed = 0
     num_total = len(os.listdir(input_dir))
 
@@ -240,9 +242,7 @@ def normalize_color(input_dir, gray_norm_dir, output_dir, version='optimal', set
 
     for img_name in input_names:
         name = img_name
-        if (set_background_pix == 0) and not (version == 'fast'):
-            img_name = "BLACK TEST IMG 10 " + img_name
-        if img_name in output_names:
+        if img_name in output_names and overwrite is False:
             continue
         path = os.path.join(input_dir, name)
 
@@ -286,25 +286,33 @@ def normalize_color(input_dir, gray_norm_dir, output_dir, version='optimal', set
         else:
             assert False, version + " not a version for color normalization."
 
+        if only_once is True:
+            break
+
     print("{} images normalized and saved out of {} total images with {} version. {} images were filtered out."
           .format(num_processed, num_total, version, num_total - num_processed))
 
     return num_processed
 
 
-def run_normalize_gray(dm, base_output_dir, overwrite=False, debug=False):
+def run_normalize_gray(dm, overwrite=False, debug=False, only_once=False):
     # set up the input and output directories
     dm.gray_input_dir = dm.current_output_dir
-    input_dir = dm.current_output_dir
-    # base_output_dir = dm.set_output_dir('normalized')
+    dm.current_input_dir = dm.current_output_dir
+    input_dir = dm.current_input_dir
+
+    base_output_dir = dm.set_output_dir('normalized')
     output_dir = dm.set_output_dir('gray', base_output_dir=base_output_dir)
 
     if debug is True:
+        print(f"input dir in run normalize gray is: {input_dir}")
+        print(f"output dir in run normalize gray is: {output_dir}")
+
         # set up debug output dir
         debug_output_dir = dm.set_output_dir('debug_gray', base_output_dir=base_output_dir)
         # now run
         st = time.time()
-        num_processed = normalize_gray(input_dir, debug_output_dir, overwrite=overwrite, set_background_pix=0)
+        num_processed = normalize_gray(input_dir, debug_output_dir, overwrite=overwrite, set_background_pix=0, only_once=only_once)
         et = time.time() - st
         if num_processed != 0:
             print("{} debug gray images normalized in {}spi".format(num_processed, et / num_processed))
@@ -317,20 +325,42 @@ def run_normalize_gray(dm, base_output_dir, overwrite=False, debug=False):
         print("{} gray images normalized in {}spi".format(num_processed, et / num_processed))
 
 
-def run_normalize_color(dm, version='optimal', overwrite=False, debug=False):
-    # first run normalize_gray
-    base_output_dir = dm.set_output_dir('normalized')
-    run_normalize_gray(dm, base_output_dir, overwrite=overwrite, debug=debug)
+def run_normalize_color(dm, version='optimal', overwrite=False, debug=False, only_once=False):
+    # set up important directories first
+    color_input_dir = copy.deepcopy(dm.current_input_dir)  # these are the denoised/flattened color images
+
+    # run normalize gray
+    run_normalize_gray(dm, overwrite=overwrite, debug=debug, only_once=only_once)
 
     # set up the input and output directories
-    color_input_dir = dm.current_input_dir  # these are the denoised color images
     gray_input_dir = dm.current_output_dir  # these are the normalized grey images
+    base_output_dir = dm.set_output_dir('normalized')
     output_dir = dm.set_output_dir('color', base_output_dir=base_output_dir)
 
-    # now run
-    st = time.time()
-    num_processed = normalize_color(color_input_dir, gray_input_dir, output_dir, version=version)
-    et = time.time() - st
-    if num_processed != 0:
-        print("{} color images normalized in {}spi".format(num_processed, et / num_processed))
+    if debug is True:
+        print(f"color input dir in run normalize color is: {color_input_dir}")
+        print(f"base output dir in run normalize color is: {base_output_dir}")
+        print(f"gray input dir in run normalize color is: {gray_input_dir}")
+        print(f"output dir in run normalize color is: {output_dir}")
 
+        # set up debug output dir
+        debug_output_dir = dm.set_output_dir('debug_color', base_output_dir=base_output_dir)
+        print(f"debug_output_dir is: {debug_output_dir}")
+        print()
+
+        # now run
+        st = time.time()
+        num_processed = normalize_color(color_input_dir, gray_input_dir, debug_output_dir, version,
+                                        overwrite=overwrite, set_background_pix=0, only_once=only_once)
+        et = time.time() - st
+        if num_processed != 0:
+            print("{} debug color images normalized in {}spi".format(num_processed, et / num_processed))
+
+    else:
+        # now run
+        st = time.time()
+        num_processed = normalize_color(color_input_dir, gray_input_dir, output_dir, version=version,
+                                        overwrite=overwrite, only_once=only_once)
+        et = time.time() - st
+        if num_processed != 0:
+            print("{} color images normalized in {}spi".format(num_processed, et / num_processed))
