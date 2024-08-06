@@ -1,3 +1,12 @@
+## [0.5.1](https://github.com/rsbrost/ultimate-image-processor/compare/v0.5.0...v0.5.1) (2024-08-06)
+
+
+### Bug Fixes
+
+* **doc:** updated important documentation regarding uip install. ([8329a65](https://github.com/rsbrost/ultimate-image-processor/commit/8329a652b702ce2ce432cee5848eb476bfbac3cc))
+
+
+
 # [0.5.0](https://github.com/rsbrost/ultimate-image-processor/compare/v0.4.1...v0.5.0) (2024-08-06)
 
 
