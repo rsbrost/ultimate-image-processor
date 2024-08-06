@@ -32,9 +32,54 @@ jobs:
         release-count: 0
         git-message: ${{ github.event.head_commit.message }}
 
+    - name: Debug Outputs
+      run: |
+        echo "Tag: ${{ steps.changelog.outputs.tag }}"
+        echo "New Version: ${{ steps.changelog.outputs.new_version }}"
+        echo "Skipped: ${{ steps.changelog.outputs.skipped }}"
+
+    - name: Check if Tag Exists
+      id: check_tag
+      run: |
+        if git rev-parse "refs/tags/${{ steps.changelog.outputs.tag }}" >/dev/null 2>&1; then
+          echo "Tag already exists."
+          echo "tag_exists=true" >> $GITHUB_ENV
+        else
+          echo "Tag does not exist."
+          echo "tag_exists=false" >> $GITHUB_ENV
+        fi
+
+    - name: Check for Changes
+      id: check_changes
+      run: |
+        if [ -z "$(git status --porcelain)" ]; then
+          echo "No changes to commit."
+          echo "changes_exist=false" >> $GITHUB_ENV
+        else
+          echo "Changes to commit."
+          echo "changes_exist=true" >> $GITHUB_ENV
+        fi
+
+    - name: Create Tag
+      if: env.tag_exists == 'false'
+      run: |
+        git tag -a ${{ steps.changelog.outputs.tag }} -m "Release version ${{ steps.changelog.outputs.tag }}"
+        git push origin ${{ steps.changelog.outputs.tag }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.UIP_TOKEN }}
+
+    - name: Commit and Push Changes
+      if: env.changes_exist == 'true'
+      run: |
+        git add .
+        git commit -m "chore(release): bump version to ${{ steps.changelog.outputs.new_version }} [skip ci]"
+        git push origin main
+      env:
+        GITHUB_TOKEN: ${{ secrets.UIP_TOKEN }}
+
     - name: Create Release
       uses: actions/create-release@v1
-      if: ${{ steps.changelog.outputs.skipped == 'false' }}
+      if: ${{ steps.changelog.outputs.skipped == 'false' && env.tag_exists == 'false' }}
       env:
         GITHUB_TOKEN: ${{ secrets.UIP_TOKEN }}
       with:
