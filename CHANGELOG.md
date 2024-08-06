@@ -1,3 +1,12 @@
+# [0.4.0](https://github.com/rsbrost/ultimate-image-processor/compare/v0.3.0...v0.4.0) (2024-08-06)
+
+
+### Features
+
+* Added advanced_custom_run.ipynb for further example of how the program can be used. Updated run.ipynb to include current example output implementing demo input data. ([4de27e1](https://github.com/rsbrost/ultimate-image-processor/commit/4de27e1045ca77d80b41bb248300f9fc1029ab2f))
+
+
+
 # [0.3.0](https://github.com/rsbrost/ultimate-image-processor/compare/v0.2.0...v0.3.0) (2024-08-06)
 
 
