@@ -18,6 +18,9 @@ Ultimate image processing package used for optimizing images of 2D nanomaterials
 pip install -e .
 ```
 
+>Note: It is recommended that you install ultimate-image-processor in its own environment
+>There are many ways to do this, such as with VS code or anaconda, so please search for how best to implement and use python environments for use with unique software packages.
+
 ### Usage
 
 The Jupyter Notebook run.ipynb found in the uip folder is ready to use with the following steps:
