@@ -5,5 +5,6 @@ Ultimate image processing package used for optimizing images of 2D nanomaterials
 >1. Denoise
 >2. (Optional) Flatten
 >3. Generate Gray Images
->4. Normalize
->5. Generate Masks
+>4. Normalize Gray Images
+>5. Normalize Color Images
+>6. Generate Masks
