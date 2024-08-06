@@ -29,6 +29,12 @@ jobs:
         release-count: 0
         git-message: ${{ github.event.head_commit.message }}
 
+    - name: Debug Outputs
+      run: |
+        echo "Tag: ${{ steps.changelog.outputs.tag }}"
+        echo "New Version: ${{ steps.changelog.outputs.new_version }}"
+        echo "Skipped: ${{ steps.changelog.outputs.skipped }}"
+
     - name: Check if Tag Exists
       id: check_tag
       run: |
