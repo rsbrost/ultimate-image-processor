@@ -1,3 +1,12 @@
+## [0.4.1](https://github.com/rsbrost/ultimate-image-processor/compare/v0.4.0...v0.4.1) (2024-08-06)
+
+
+### Bug Fixes
+
+* fixing error with releases being unintentionally skipped. ([c26b8ce](https://github.com/rsbrost/ultimate-image-processor/commit/c26b8ce06dd7886ccbd30a26519254b37dee47c3))
+
+
+
 # [0.4.0](https://github.com/rsbrost/ultimate-image-processor/compare/v0.3.0...v0.4.0) (2024-08-06)
 
 
