@@ -1,5 +1,5 @@
 # ultimate-image-processor
-Ultimate image processing package used for optimizing images of 2D nanomaterials and generating essential inputs for machine learning applications; however, many of the features and functionalities included here can be used to improve image quality, segment distinct sections of images, and optimize inputs for machine learning applications.
+Ultimate image processing package used for optimizing images of 2D nanomaterials and generating essential inputs for machine learning applications; however, many of the features and functionalities included here can generally improve image quality, segment distinct sections of images, and optimize inputs for machine learning applications.
 
 >Note: The ideal run order for the processes in my scenario is:
 1. Denoise
