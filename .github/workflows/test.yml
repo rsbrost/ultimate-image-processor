@@ -31,6 +31,7 @@ jobs:
         python -m pip install pytest
         python -m pip install nbmake
         python -m pip install -e .
+        python -m pip install numpy==1.21.0
 
     # - name: Test with pytest
       # run: |
