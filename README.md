@@ -1,7 +1,7 @@
 # ultimate-image-processor
 Ultimate image processing package used for optimizing images of 2D nanomaterials and generating essential inputs for machine learning applications; however, many of the features and functionalities included here can generally improve image quality, segment distinct sections of images, and optimize inputs for machine learning applications.
 
->Note: The ideal run order for the processes in my scenario is:
+>Note: The ideal run order for the processes in my scenario (as implemented in uip/run.ipynb) is:
 >1. Denoise
 >2. (Optional) Flatten
 >3. Generate Gray Images
