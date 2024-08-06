@@ -15,7 +15,7 @@ setup(
         'numpy',
         'imageio',
         'scipy',
-        'numpy',
+        'numpy==1.24.4',
         'ipykernel'
     ],
 )
