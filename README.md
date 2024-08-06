@@ -4,6 +4,8 @@
 
 Ultimate image processing package used for optimizing images of 2D nanomaterials and generating essential inputs for machine learning applications; however, many of the features and functionalities included here can generally improve image quality, segment distinct sections of images, and optimize inputs for machine learning applications.
 
+## Getting Started
+
 ### Install
 
 1. Use git to clone this repository into your computer.
@@ -15,6 +17,16 @@ Ultimate image processing package used for optimizing images of 2D nanomaterials
 ```
 pip install -e .
 ```
+
+### Usage
+
+The Jupyter Notebook run.ipynb found in the uip folder is ready to use with the following steps:
+1. Replace the images in the input folder with your own data.
+2. Add your corresponding flatfield image (optional).
+3. *Critical* If you are not using a flatfield image, make sure to delete the demo flatfield image or the process will degrade your images by using a flatfield image that doesn't match.
+4. Run all cells in the notebook.
+5. Check your outputs.
+
 >Note: The ideal run order for the processes in my scenario (as implemented in uip/run.ipynb) is:
 >1. Denoise
 >2. (Optional) Flatten
