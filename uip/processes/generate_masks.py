@@ -1,7 +1,7 @@
 import numpy as np
 import os
 import cv2
-import scipy as stats
+from scipy.stats.mstats import mode
 
 
 def get_mode(gray_img):
@@ -33,9 +33,9 @@ def thresh(gray_img, min_area=60):
 
     # filter out the segments that do not meet the minimum area set here
     contours, hierarchy = cv2.findContours(eroded_image, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-    # filtered_contours = [cnt for cnt in contours if cv2.contourArea(cnt) >= min_area]
+    filtered_contours = [cnt for cnt in contours if cv2.contourArea(cnt) >= min_area]
     filtered_mask = np.zeros_like(thresholded_image)
-    # null = cv2.drawContours(filtered_mask, filtered_contours, -1, color=255, thickness=cv2.FILLED)
+    cv2.drawContours(filtered_mask, filtered_contours, -1, color=255, thickness=cv2.FILLED)
 
     # can smooth the edges. Not testing this now...
     # smoothed_image = cv2.bilateralFilter(filtered_mask, d=9, sigmaColor=150, sigmaSpace=150)
@@ -59,25 +59,25 @@ def add_edges(gray_img, filtered_mask, min_area1=7, min_area2=100, max_area=5000
     contours, hierarchy = cv2.findContours(edges, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
     # contours, hierarchy = cv2.findContours(edges, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
-    # filtered_contours = [cnt for cnt in contours if cv2.contourArea(cnt) >= min_area1]
+    filtered_contours = [cnt for cnt in contours if cv2.contourArea(cnt) >= min_area1]
 
     mask = np.zeros_like(gray_img)
-    # null = cv2.drawContours(mask, filtered_contours, -1, (255,), thickness=2)
+    cv2.drawContours(mask, filtered_contours, -1, (255,), thickness=2)
 
     segments_with_lines = filtered_mask.copy()
     segments_with_lines[mask == 255] = 0
 
     # filter out the segments that do not meet the minimum area set here
     contours, hierarchy = cv2.findContours(segments_with_lines, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-    # filtered_contours = [cnt for cnt in contours if cv2.contourArea(cnt) >= min_area2]
+    filtered_contours = [cnt for cnt in contours if cv2.contourArea(cnt) >= min_area2]
     final_mask = np.zeros_like(filtered_mask)
-    # null = cv2.drawContours(final_mask, filtered_contours, -1, color=255, thickness=cv2.FILLED)
+    cv2.drawContours(final_mask, filtered_contours, -1, color=255, thickness=cv2.FILLED)
 
     # and now filter the ones that are too large
     contours, hierarchy = cv2.findContours(final_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-    # filtered_contours = [cnt for cnt in contours if cv2.contourArea(cnt) < max_area]
+    filtered_contours = [cnt for cnt in contours if cv2.contourArea(cnt) < max_area]
     final_mask = np.zeros_like(filtered_mask)
-    # null = cv2.drawContours(final_mask, filtered_contours, -1, color=255, thickness=cv2.FILLED)
+    cv2.drawContours(final_mask, filtered_contours, -1, color=255, thickness=cv2.FILLED)
 
     # final erode for good measure
     kernel_size = 3
@@ -87,10 +87,16 @@ def add_edges(gray_img, filtered_mask, min_area1=7, min_area2=100, max_area=5000
     return final_mask
 
 
-def make_masks(input_dir, output_dir):
+def make_masks(dm, debug=False):
+    input_dir = dm.current_output_dir
     input_names = os.listdir(input_dir)
     input_names.sort()
     num_total = len(input_names)
+
+    output_dir = dm.set_output_dir('semantic_masks')
+
+    if debug is True:
+        print(f"input dir is: {input_dir} and output dir is: {output_dir}")
 
     num_processed, skipped = 0, 0
     for name in input_names:
@@ -105,7 +111,7 @@ def make_masks(input_dir, output_dir):
         # make sure the mask is predominantly black before saving
         # otherwise omit since it is likely confusing foreground with background
         flattened_mask = final_mask.flatten()
-        mask_mode = stats.mode(flattened_mask)[0]
+        mask_mode = mode(flattened_mask)[0]
 
         if mask_mode != 0:
             skipped += 1
@@ -114,6 +120,10 @@ def make_masks(input_dir, output_dir):
         cv2.imwrite(os.path.join(output_dir, name), final_mask)
         num_processed += 1
 
-    print("{} masks produced from {} input images while {} skipped for lacking mode of 0.".format(num_processed,
-                                                                                                  num_total, skipped))
+        print(f"\rGenerating semantic masks: {num_processed}/{num_total}", end="")
+    print()
+
+    print("{} masks produced from {} input images while {} skipped for lacking mode of 0.\n".format(num_processed,
+                                                                                                    num_total, skipped))
+
     return num_processed
