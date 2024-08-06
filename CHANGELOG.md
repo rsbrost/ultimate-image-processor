@@ -1,3 +1,17 @@
+# [0.5.0](https://github.com/rsbrost/ultimate-image-processor/compare/v0.4.1...v0.5.0) (2024-08-06)
+
+
+### Bug Fixes
+
+* **test)(workflow:** attempting to force a specific version of numpy on install to ensure github workflow for testing notebooks can pass despite changes to newer versions of numpy conflicting with essential packages. ([c18bf63](https://github.com/rsbrost/ultimate-image-processor/commit/c18bf63926c7ea77c409993c6b692a91ce3a01f1))
+
+
+### Features
+
+* **tests:** Added workflow to run tests as a status check for pull requests. ([cf1ce3b](https://github.com/rsbrost/ultimate-image-processor/commit/cf1ce3bbdd17d2bad2003719910683d6f6d64870))
+
+
+
 ## [0.4.1](https://github.com/rsbrost/ultimate-image-processor/compare/v0.4.0...v0.4.1) (2024-08-06)
 
 
