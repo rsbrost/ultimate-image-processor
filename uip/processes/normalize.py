@@ -88,7 +88,7 @@ def normalize_gray(input_dir, output_dir, overwrite=False, set_background_pix=No
         path = os.path.join(input_dir, name)
         num_processed = num_processed + normalize_gray_img_background(path, output_dir, set_background_pix)
 
-        print(f"\rNormalize gray progress: {num_processed}/{num_total}", end="")
+        print(f"\rNormalizing gray images: {num_processed}/{num_total}", end="")
         if only_once is True:
             break
     print()
@@ -286,8 +286,10 @@ def normalize_color(input_dir, gray_norm_dir, output_dir, version='optimal', ove
         else:
             assert False, version + " not a version for color normalization."
 
+        print(f"\rNormalizing color images: {num_processed}/{num_total}", end="")
         if only_once is True:
             break
+    print()
 
     print("{} images normalized and saved out of {} total images with {} version. {} images were filtered out."
           .format(num_processed, num_total, version, num_total - num_processed))
@@ -315,14 +317,17 @@ def run_normalize_gray(dm, overwrite=False, debug=False, only_once=False):
         num_processed = normalize_gray(input_dir, debug_output_dir, overwrite=overwrite, set_background_pix=0, only_once=only_once)
         et = time.time() - st
         if num_processed != 0:
-            print("{} debug gray images normalized in {}spi".format(num_processed, et / num_processed))
+            spi = round((et / num_processed), 3)
+            print("{} debug gray images normalized in {}spi".format(num_processed, spi))
 
     # now run
     st = time.time()
     num_processed = normalize_gray(input_dir, output_dir, overwrite=overwrite)
     et = time.time() - st
     if num_processed != 0:
-        print("{} gray images normalized in {}spi".format(num_processed, et / num_processed))
+        spi = round((et / num_processed), 3)
+        print("{} gray images normalized in {}spi".format(num_processed, spi))
+    print()
 
 
 def run_normalize_color(dm, version='optimal', overwrite=False, debug=False, only_once=False):
@@ -354,7 +359,8 @@ def run_normalize_color(dm, version='optimal', overwrite=False, debug=False, onl
                                         overwrite=overwrite, set_background_pix=0, only_once=only_once)
         et = time.time() - st
         if num_processed != 0:
-            print("{} debug color images normalized in {}spi".format(num_processed, et / num_processed))
+            spi = round((et / num_processed), 3)
+            print("{} debug color images normalized in {}spi".format(num_processed, spi))
 
     else:
         # now run
@@ -363,4 +369,6 @@ def run_normalize_color(dm, version='optimal', overwrite=False, debug=False, onl
                                         overwrite=overwrite, only_once=only_once)
         et = time.time() - st
         if num_processed != 0:
-            print("{} color images normalized in {}spi".format(num_processed, et / num_processed))
+            spi = round((et / num_processed), 3)
+            print("{} color images normalized in {}spi".format(num_processed, spi))
+    print()

@@ -120,7 +120,7 @@ def optimal_denoise(input_dir, output_dir, strength=6, only_once=False, debug=Fa
         if only_once is True:
             break
 
-        print(f"\rOptimal progress: {num_processed}/{num_total}", end="")
+        print(f"\rDenoising optimal: {num_processed}/{num_total}", end="")
     print()
 
     if debug is True:
@@ -150,7 +150,8 @@ def run_denoise(dm, fast=False, moderate=False, optimal=False, only_once=False, 
         fast_num_processed += fast_denoise(input_dirs, fast_dn_output_dir, only_once=only_once, overwrite=overwrite)
         et = time.time() - st
         if fast_num_processed != 0:
-            print("{} images fast denoised in {}spi \n".format(fast_num_processed, et / fast_num_processed))
+            spi = round((et / fast_num_processed), 3)
+            print("{} images fast denoised in {}spi \n".format(fast_num_processed, et / spi))
 
         num_processed += fast_num_processed
 
@@ -162,7 +163,8 @@ def run_denoise(dm, fast=False, moderate=False, optimal=False, only_once=False, 
         moderate_num_processed += moderate_denoise(input_dirs, moderate_dn_output_dir, only_once=only_once, overwrite=overwrite)
         et = time.time() - st
         if moderate_num_processed != 0:
-            print("{} images moderate denoised in {}spi \n".format(moderate_num_processed, et / moderate_num_processed))
+            spi = round((et / moderate_num_processed), 3)
+            print("{} images moderate denoised in {}spi \n".format(moderate_num_processed, et / spi))
 
         num_processed += moderate_num_processed
 
@@ -174,6 +176,7 @@ def run_denoise(dm, fast=False, moderate=False, optimal=False, only_once=False, 
         optimal_num_processed += optimal_denoise(input_dirs, optimal_dn_output_dir, only_once=only_once, overwrite=overwrite)
         et = time.time() - st
         if optimal_num_processed != 0:
-            print("{} images optimal denoised in {}spi \n".format(optimal_num_processed, et / optimal_num_processed))
+            spi = round((et / optimal_num_processed), 3)
+            print("{} images optimal denoised in {}spi \n".format(optimal_num_processed, spi))
 
         num_processed += optimal_num_processed

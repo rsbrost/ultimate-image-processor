@@ -29,7 +29,7 @@ def flatten(input_dir, flatfield_img, output_dir, overwrite):
         cv2.imwrite(os.path.join(output_dir, img_name), flat_img)
         num_processed += 1
 
-        print(f"\rFlattened progress: {num_processed}/{num_total}", end="")
+        print(f"\rFlattening images: {num_processed}/{num_total}", end="")
     print()
 
     return num_processed
@@ -52,4 +52,5 @@ def run_flatten(dm, overwrite=False):
     num_processed = flatten(input_dir, flatfield_img, output_dir, overwrite=overwrite)
     et = time.time() - st
     if num_processed != 0:
-        print("{} images flattened in {}spi".format(num_processed, et / num_processed))
+        spi = round((et / num_processed), 3)
+        print("{} images flattened in {}spi".format(num_processed, spi))

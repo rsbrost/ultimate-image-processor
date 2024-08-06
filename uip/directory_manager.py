@@ -5,6 +5,7 @@ import os
 class DirectoryManager():
 
     def __init__(self, input_dir="input", output_dir="ouput", flatfield_dir="flatfield"):
+        print("Initializing input, output, and flatfield directories.\n")
         # set up the original input directory
         self._base_input_dir = os.path.join(Path(''), input_dir)
         os.makedirs(self._base_input_dir, exist_ok=True)

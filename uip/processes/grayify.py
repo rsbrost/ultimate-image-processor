@@ -21,7 +21,7 @@ def get_gray_from_color(input_dir, output_dir, debug=False, overwrite=False):
 
         num_processed += 1
 
-        print(f"\rGrayifying progress: {num_processed}/{num_total}", end="")
+        print(f"\rGetting gray images: {num_processed}/{num_total}", end="")
     print()
 
     if debug is True:
@@ -31,15 +31,20 @@ def get_gray_from_color(input_dir, output_dir, debug=False, overwrite=False):
     return num_processed
 
 
-def run_get_gray(dm, overwrite=False):
+def run_get_gray(dm, overwrite=False, debug=False):
     # set up the input and output directories
     dm.current_input_dir = dm.current_output_dir
     input_dir = dm.current_output_dir
     output_dir = dm.set_output_dir('gray')
 
+    if debug is True:
+        print(f"input dir is: {input_dir} and output dir is: {output_dir}")
+
     # now run
     st = time.time()
-    num_processed = get_gray_from_color(input_dir, output_dir, overwrite)
+    num_processed = get_gray_from_color(input_dir, output_dir, overwrite=overwrite, debug=debug)
     et = time.time() - st
     if num_processed != 0:
-        print("{} images flattened in {}spi".format(num_processed, et / num_processed))
+        spi = round((et / num_processed), 3)
+        print("{} images grayified in {}spi".format(num_processed, spi))
+    print()
